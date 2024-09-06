@@ -1,8 +1,3 @@
-// JavaScript for Interactive Simulations
-
-// JavaScript for Interactive Simulations
-
-// Start Torque Simulation
 function startTorque() {
   document.getElementById('torque-container').style.display = 'block';
   document.getElementById('cm-container').style.display = 'none';
@@ -15,100 +10,48 @@ function startTorque() {
   const torqueCanvas = document.getElementById('torqueCanvas');
   const torqueCtx = torqueCanvas.getContext('2d');
 
-  let isDragging = false;
-  let dragStartX = 0;
-  let dragStartY = 0;
-
-  function drawTorque(force, distance) {
+  function drawTorque() {
     torqueCtx.clearRect(0, 0, torqueCanvas.width, torqueCanvas.height);
 
     // Draw lever arm
     torqueCtx.strokeStyle = 'black';
     torqueCtx.lineWidth = 5;
     torqueCtx.beginPath();
-    torqueCtx.moveTo(150, 300);
-    torqueCtx.lineTo(150 + distance * 30, 300); // Scale distance
+    torqueCtx.moveTo(100, 300);
+    torqueCtx.lineTo(100 + distanceSlider.value * 30, 300);
     torqueCtx.stroke();
 
     // Draw force vector
     torqueCtx.strokeStyle = 'blue';
     torqueCtx.lineWidth = 3;
     torqueCtx.beginPath();
-    torqueCtx.moveTo(150 + distance * 30, 300);
-    torqueCtx.lineTo(150 + distance * 30, 300 - force * 3); // Scale force
+    torqueCtx.moveTo(100 + distanceSlider.value * 30, 300);
+    torqueCtx.lineTo(100 + distanceSlider.value * 30, 300 - forceSlider.value * 2);
     torqueCtx.stroke();
 
     // Draw force arrow
     torqueCtx.fillStyle = 'blue';
     torqueCtx.beginPath();
-    torqueCtx.moveTo(150 + distance * 30, 300 - force * 3);
-    torqueCtx.lineTo(150 + distance * 30 - 10, 300 - force * 3 + 10);
-    torqueCtx.lineTo(150 + distance * 30 + 10, 300 - force * 3 + 10);
+    torqueCtx.moveTo(100 + distanceSlider.value * 30, 300 - forceSlider.value * 2);
+    torqueCtx.lineTo(100 + distanceSlider.value * 30 - 10, 300 - forceSlider.value * 2 + 10);
+    torqueCtx.lineTo(100 + distanceSlider.value * 30 + 10, 300 - forceSlider.value * 2 + 10);
     torqueCtx.fill();
 
-    // Draw rotating effect
-    torqueCtx.strokeStyle = 'red';
-    torqueCtx.lineWidth = 2;
-    torqueCtx.beginPath();
-    torqueCtx.arc(150, 300, distance * 30, 0, Math.PI * 2 * (force / 100), false);
-    torqueCtx.stroke();
-
-    // Draw text
-    torqueCtx.fillStyle = 'black';
-    torqueCtx.font = '16px Arial';
-    torqueCtx.fillText('Lever Arm', 120, 320);
-    torqueCtx.fillText('Force', 150 + distance * 30 + 20, 300 - force * 3);
-    torqueCtx.fillText('Torque = ' + (force * distance).toFixed(2) + ' Nm', 150, 50);
+    torqueResult.textContent = (forceSlider.value * distanceSlider.value).toFixed(2);
+    forceValue.textContent = forceSlider.value;
+    distanceValue.textContent = distanceSlider.value;
   }
 
   function updateTorque() {
-    const force = forceSlider.value;
-    const distance = distanceSlider.value;
-    const torque = force * distance;
-    torqueResult.textContent = torque.toFixed(2);
-    forceValue.textContent = force;
-    distanceValue.textContent = distance;
-    
-    drawTorque(force, distance);
+    drawTorque();
   }
 
   forceSlider.addEventListener('input', updateTorque);
   distanceSlider.addEventListener('input', updateTorque);
 
-  // Interactive dragging
-  torqueCanvas.addEventListener('mousedown', function(e) {
-    isDragging = true;
-    dragStartX = e.offsetX;
-    dragStartY = e.offsetY;
-  });
-
-  torqueCanvas.addEventListener('mouseup', function() {
-    isDragging = false;
-  });
-
-  torqueCanvas.addEventListener('mousemove', function(e) {
-    if (isDragging) {
-      const mouseX = e.offsetX;
-      const mouseY = e.offsetY;
-      const dx = mouseX - dragStartX;
-      const dy = mouseY - dragStartY;
-      
-      const force = Math.min(Math.max(dy / 5, 1), 100); // Adjust force based on drag
-      const distance = Math.min(Math.max(dx / 10, 1), 10); // Adjust distance based on drag
-      
-      forceSlider.value = force;
-      distanceSlider.value = distance;
-      
-      updateTorque();
-    }
-  });
-
   updateTorque(); // Initialize with default values
 }
 
-// JavaScript for Interactive Simulations
-
-// Start Center of Mass Simulation
 function startCM() {
   document.getElementById('cm-container').style.display = 'block';
   document.getElementById('torque-container').style.display = 'none';
@@ -125,148 +68,31 @@ function startCM() {
   const cmCanvas = document.getElementById('cmCanvas');
   const cmCtx = cmCanvas.getContext('2d');
 
-  let isDraggingMass1 = false;
-  let isDraggingMass2 = false;
-
-  function drawCM(mass1, position1, mass2, position2, centerOfMass) {
+  function drawCM() {
     cmCtx.clearRect(0, 0, cmCanvas.width, cmCanvas.height);
 
     // Draw Mass 1
     cmCtx.fillStyle = 'blue';
-    cmCtx.fillRect(position1 * 50 - 15, 300 - mass1 * 5, 30, mass1 * 5); // Scale for visibility
+    cmCtx.fillRect(position1Slider.value * 50 - 15, 300 - mass1Slider.value * 5, 30, mass1Slider.value * 5);
 
     // Draw Mass 2
     cmCtx.fillStyle = 'red';
-    cmCtx.fillRect(position2 * 50 - 15, 300 - mass2 * 5, 30, mass2 * 5); // Scale for visibility
+    cmCtx.fillRect(position2Slider.value * 50 - 15, 300 - mass2Slider.value * 5, 30, mass2Slider.value * 5);
 
     // Draw Center of Mass
+    const centerOfMass = (mass1Slider.value * position1Slider.value + mass2Slider.value * position2Slider.value) / (mass1Slider.value + mass2Slider.value);
     cmCtx.fillStyle = 'green';
-    cmCtx.fillRect(centerOfMass * 50 - 5, 290, 10, 10); // Center of Mass representation
+    cmCtx.fillRect(centerOfMass * 50 - 5, 290, 10, 10);
 
-    // Draw Text Labels
-    cmCtx.fillStyle = 'black';
-    cmCtx.font = '16px Arial';
-    cmCtx.fillText('Mass 1', position1 * 50 - 10, 320);
-    cmCtx.fillText('Mass 2', position2 * 50 - 10, 320);
-    cmCtx.fillText('Center of Mass', centerOfMass * 50 - 10, 280);
-    cmCtx.fillText('Center of Mass = ' + centerOfMass.toFixed(2) + ' m', 50, 50);
+    cmResult.textContent = centerOfMass.toFixed(2);
+    mass1Value.textContent = mass1Slider.value;
+    position1Value.textContent = position1Slider.value;
+    mass2Value.textContent = mass2Slider.value;
+    position2Value.textContent = position2Slider.value;
   }
 
   function updateCM() {
-    const mass1 = parseFloat(mass1Slider.value);
-    const position1 = parseFloat(position1Slider.value);
-    const mass2 = parseFloat(mass2Slider.value);
-    const position2 = parseFloat(position2Slider.value);
-
-    const centerOfMass = (mass1 * position1 + mass2 * position2) / (mass1 + mass2);
-    cmResult.textContent = centerOfMass.toFixed(2);
-    mass1Value.textContent = mass1;
-    position1Value.textContent = position1;
-    mass2Value.textContent = mass2;
-    position2Value.textContent = position2;
-
-    drawCM(mass1, position1, mass2, position2, centerOfMass);
-  }
-
-  mass1Slider.addEventListener('input', updateCM);
-  position1Slider.addEventListener('input', updateCM);
-  mass2Slider.addEventListener('input', updateCM);
-  position2Slider.addEventListener('input', updateCM);
-
-  // Interactive dragging
-  cmCanvas.addEventListener('mousedown', function(e) {
-    const x = e.offsetX;
-    const y = e.offsetY;
-
-    // Check if clicking on mass 1 or mass 2
-    if (x >= position1 * 50 - 15 && x <= position1 * 50 + 15 && y >= 300 - mass1 * 5 && y <= 300) {
-      isDraggingMass1 = true;
-    } else if (x >= position2 * 50 - 15 && x <= position2 * 50 + 15 && y >= 300 - mass2 * 5 && y <= 300) {
-      isDraggingMass2 = true;
-    }
-  });
-
-  cmCanvas.addEventListener('mouseup', function() {
-    isDraggingMass1 = false;
-    isDraggingMass2 = false;
-  });
-
-  cmCanvas.addEventListener('mousemove', function(e) {
-    if (isDraggingMass1 || isDraggingMass2) {
-      const x =
-
-// JavaScript for Interactive Simulations
-
-// Start Torque Simulation
-function startTorque() {
-  document.getElementById('torque-container').style.display = 'block';
-  document.getElementById('cm-container').style.display = 'none';
-
-  const forceSlider = document.getElementById('torqueForce');
-  const distanceSlider = document.getElementById('torqueDistance');
-  const torqueResult = document.getElementById('torqueResult');
-  const forceValue = document.getElementById('forceValue');
-  const distanceValue = document.getElementById('distanceValue');
-  const torqueCanvas = document.getElementById('torqueCanvas');
-  const torqueCtx = torqueCanvas.getContext('2d');
-
-  function updateTorque() {
-    const force = forceSlider.value;
-    const distance = distanceSlider.value;
-    const torque = force * distance;
-    torqueResult.textContent = torque.toFixed(2);
-    forceValue.textContent = force;
-    distanceValue.textContent = distance;
-
-    // Clear and redraw the canvas for torque
-    torqueCtx.clearRect(0, 0, torqueCanvas.width, torqueCanvas.height);
-    torqueCtx.fillStyle = 'blue';
-    torqueCtx.fillRect(10, 10, force * 2, 20); // Example visual effect
-  }
-
-  forceSlider.addEventListener('input', updateTorque);
-  distanceSlider.addEventListener('input', updateTorque);
-
-  updateTorque(); // Initialize with default values
-}
-
-// Start Center of Mass Simulation
-function startCM() {
-  document.getElementById('cm-container').style.display = 'block';
-  document.getElementById('torque-container').style.display = 'none';
-
-  const mass1Slider = document.getElementById('mass1');
-  const position1Slider = document.getElementById('position1');
-  const mass2Slider = document.getElementById('mass2');
-  const position2Slider = document.getElementById('position2');
-  const cmResult = document.getElementById('cmResult');
-  const mass1Value = document.getElementById('mass1Value');
-  const position1Value = document.getElementById('position1Value');
-  const mass2Value = document.getElementById('mass2Value');
-  const position2Value = document.getElementById('position2Value');
-  const cmCanvas = document.getElementById('cmCanvas');
-  const cmCtx = cmCanvas.getContext('2d');
-
-  function updateCM() {
-    const mass1 = parseFloat(mass1Slider.value);
-    const position1 = parseFloat(position1Slider.value);
-    const mass2 = parseFloat(mass2Slider.value);
-    const position2 = parseFloat(position2Slider.value);
-
-    const centerOfMass = (mass1 * position1 + mass2 * position2) / (mass1 + mass2);
-    cmResult.textContent = centerOfMass.toFixed(2);
-    mass1Value.textContent = mass1;
-    position1Value.textContent = position1;
-    mass2Value.textContent = mass2;
-    position2Value.textContent = position2;
-
-    // Clear and redraw the canvas for center of mass
-    cmCtx.clearRect(0, 0, cmCanvas.width, cmCanvas.height);
-    cmCtx.fillStyle = 'red';
-    cmCtx.fillRect(position1, 100, mass1 * 2, 20); // Example visual effect
-    cmCtx.fillRect(position2, 130, mass2 * 2, 20); // Example visual effect
-    cmCtx.fillStyle = 'green';
-    cmCtx.fillRect(centerOfMass * 2, 160, 20, 20); // Center of Mass
+    drawCM();
   }
 
   mass1Slider.addEventListener('input', updateCM);
