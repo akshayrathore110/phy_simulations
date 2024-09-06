@@ -1,5 +1,7 @@
 // JavaScript for Interactive Simulations
 
+// JavaScript for Interactive Simulations
+
 // Start Torque Simulation
 function startTorque() {
   document.getElementById('torque-container').style.display = 'block';
@@ -13,7 +15,10 @@ function startTorque() {
   const torqueCanvas = document.getElementById('torqueCanvas');
   const torqueCtx = torqueCanvas.getContext('2d');
 
-  // Function to draw the simulation
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+
   function drawTorque(force, distance) {
     torqueCtx.clearRect(0, 0, torqueCanvas.width, torqueCanvas.height);
 
@@ -21,35 +26,41 @@ function startTorque() {
     torqueCtx.strokeStyle = 'black';
     torqueCtx.lineWidth = 5;
     torqueCtx.beginPath();
-    torqueCtx.moveTo(50, 300);
-    torqueCtx.lineTo(50 + distance * 50, 300); // Scale distance for better visibility
+    torqueCtx.moveTo(150, 300);
+    torqueCtx.lineTo(150 + distance * 30, 300); // Scale distance
     torqueCtx.stroke();
-    
+
     // Draw force vector
     torqueCtx.strokeStyle = 'blue';
     torqueCtx.lineWidth = 3;
     torqueCtx.beginPath();
-    torqueCtx.moveTo(50 + distance * 50, 300);
-    torqueCtx.lineTo(50 + distance * 50, 300 - force * 2); // Scale force for better visibility
+    torqueCtx.moveTo(150 + distance * 30, 300);
+    torqueCtx.lineTo(150 + distance * 30, 300 - force * 3); // Scale force
     torqueCtx.stroke();
 
     // Draw force arrow
     torqueCtx.fillStyle = 'blue';
     torqueCtx.beginPath();
-    torqueCtx.moveTo(50 + distance * 50, 300 - force * 2);
-    torqueCtx.lineTo(50 + distance * 50 - 10, 300 - force * 2 + 10);
-    torqueCtx.lineTo(50 + distance * 50 + 10, 300 - force * 2 + 10);
+    torqueCtx.moveTo(150 + distance * 30, 300 - force * 3);
+    torqueCtx.lineTo(150 + distance * 30 - 10, 300 - force * 3 + 10);
+    torqueCtx.lineTo(150 + distance * 30 + 10, 300 - force * 3 + 10);
     torqueCtx.fill();
+
+    // Draw rotating effect
+    torqueCtx.strokeStyle = 'red';
+    torqueCtx.lineWidth = 2;
+    torqueCtx.beginPath();
+    torqueCtx.arc(150, 300, distance * 30, 0, Math.PI * 2 * (force / 100), false);
+    torqueCtx.stroke();
 
     // Draw text
     torqueCtx.fillStyle = 'black';
     torqueCtx.font = '16px Arial';
-    torqueCtx.fillText('Lever Arm', 20, 320);
-    torqueCtx.fillText('Force', 50 + distance * 50 + 20, 300 - force * 2);
-    torqueCtx.fillText('Torque = ' + (force * distance).toFixed(2) + ' Nm', 50, 50);
+    torqueCtx.fillText('Lever Arm', 120, 320);
+    torqueCtx.fillText('Force', 150 + distance * 30 + 20, 300 - force * 3);
+    torqueCtx.fillText('Torque = ' + (force * distance).toFixed(2) + ' Nm', 150, 50);
   }
 
-  // Update Torque Calculation and Drawing
   function updateTorque() {
     const force = forceSlider.value;
     const distance = distanceSlider.value;
@@ -58,11 +69,39 @@ function startTorque() {
     forceValue.textContent = force;
     distanceValue.textContent = distance;
     
-    drawTorque(force, distance); // Update visual representation
+    drawTorque(force, distance);
   }
 
   forceSlider.addEventListener('input', updateTorque);
   distanceSlider.addEventListener('input', updateTorque);
+
+  // Interactive dragging
+  torqueCanvas.addEventListener('mousedown', function(e) {
+    isDragging = true;
+    dragStartX = e.offsetX;
+    dragStartY = e.offsetY;
+  });
+
+  torqueCanvas.addEventListener('mouseup', function() {
+    isDragging = false;
+  });
+
+  torqueCanvas.addEventListener('mousemove', function(e) {
+    if (isDragging) {
+      const mouseX = e.offsetX;
+      const mouseY = e.offsetY;
+      const dx = mouseX - dragStartX;
+      const dy = mouseY - dragStartY;
+      
+      const force = Math.min(Math.max(dy / 5, 1), 100); // Adjust force based on drag
+      const distance = Math.min(Math.max(dx / 10, 1), 10); // Adjust distance based on drag
+      
+      forceSlider.value = force;
+      distanceSlider.value = distance;
+      
+      updateTorque();
+    }
+  });
 
   updateTorque(); // Initialize with default values
 }
