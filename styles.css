@@ -50,6 +50,8 @@ canvas {
   border: 1px solid #000;
   margin-top: 20px;
   background-color: #e0e0e0;
+  width: 600px; /* Adjust to fit your design */
+  height: 400px; /* Adjust to fit your design */
 }
 
 /* Display Values */
