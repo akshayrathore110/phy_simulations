@@ -1,15 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Center of Mass and Torque Simulation</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.17.1/matter.min.js"></script>
-    <script src="simulation.js"></script> <!-- Your JavaScript file -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Physics Simulations</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      margin-top: 20px;
+    }
+    .menu {
+      margin-top: 50px;
+    }
+    .menu button {
+      padding: 15px;
+      margin: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+    }
+    .menu button:hover {
+      background-color: #45a049;
+    }
+    .sim-container {
+      margin-top: 30px;
+      display: none;
+    }
+    .slider {
+      width: 200px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Center of Mass and Torque Simulation</h1>
-    <div id="simulation-container"></div>
+  <h1>Interactive Physics Simulations</h1>
+  <div class="menu">
+    <button onclick="startTorque()">Torque Simulation</button>
+    <button onclick="startCM()">Center of Mass Simulation</button>
+  </div>
+
+  <div id="torque-container" class="sim-container">
+    <h2>Torque Simulation</h2>
+    <canvas id="torqueCanvas" width="600" height="400" style="border:1px solid #000;"></canvas>
+    <br>
+    <label>Force (N):</label>
+    <input type="range" min="1" max="100" value="50" class="slider" id="torqueForce">
+    <span id="forceValue">50</span> N
+    <br>
+    <label>Distance (m):</label>
+    <input type="range" min="1" max="10" value="5" class="slider" id="torqueDistance">
+    <span id="distanceValue">5</span> m
+    <br>
+    <p>Torque = <span id="torqueResult">250</span> Nm</p>
+  </div>
+
+  <div id="cm-container" class="sim-container">
+    <h2>Center of Mass Simulation</h2>
+    <canvas id="cmCanvas" width="600" height="400" style="border:1px solid #000;"></canvas>
+    <br>
+    <label>Mass 1 (kg):</label>
+    <input type="range" min="1" max="100" value="50" class="slider" id="mass1">
+    <span id="mass1Value">50</span> kg
+    <br>
+    <label>Position 1 (m):</label>
+    <input type="range" min="1" max="10" value="5" class="slider" id="position1">
+    <span id="position1Value">5</span> m
+    <br>
+    <label>Mass 2 (kg):</label>
+    <input type="range" min="1" max="100" value="30" class="slider" id="mass2">
+    <span id="mass2Value">30</span> kg
+    <br>
+    <label>Position 2 (m):</label>
+    <input type="range" min="1" max="10" value="7" class="slider" id="position2">
+    <span id="position2Value">7</span> m
+    <br>
+    <p>Center of Mass = <span id="cmResult">6.11</span> m</p>
+  </div>
+
+  <script src="simulation.js"></script>
 </body>
 </html>
