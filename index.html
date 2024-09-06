@@ -42,6 +42,23 @@
     <span id="position2Value">7</span> m
     <p>Center of Mass = <span id="cmResult">6.11</span> m</p>
   </div>
+  <div id="torque-container" class="sim-container">
+  <h2>Torque Simulation</h2>
+  <canvas id="torqueCanvas" width="600" height="400"></canvas>
+  <br>
+  <label>Force (N):</label>
+  <input type="range" min="1" max="100" value="50" id="torqueForce">
+  <span id="forceValue">50</span> N
+  <label>Distance (m):</label>
+  <input type="range" min="1" max="10" value="5" id="torqueDistance">
+  <span id="distanceValue">5</span> m
+  <br>
+  <p>Torque = <span id="torqueResult">250</span> Nm</p>
+  <button id="playButton">Play</button>
+  <button id="pauseButton">Pause</button>
+  <button id="resetButton">Reset</button>
+</div>
+
 
   <script src="simulation.js"></script>
 </body>
