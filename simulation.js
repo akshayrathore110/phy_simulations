@@ -106,6 +106,8 @@ function startTorque() {
   updateTorque(); // Initialize with default values
 }
 
+// JavaScript for Interactive Simulations
+
 // Start Center of Mass Simulation
 function startCM() {
   document.getElementById('cm-container').style.display = 'block';
@@ -120,8 +122,36 @@ function startCM() {
   const position1Value = document.getElementById('position1Value');
   const mass2Value = document.getElementById('mass2Value');
   const position2Value = document.getElementById('position2Value');
+  const cmCanvas = document.getElementById('cmCanvas');
+  const cmCtx = cmCanvas.getContext('2d');
 
-  // Update Center of Mass Calculation
+  let isDraggingMass1 = false;
+  let isDraggingMass2 = false;
+
+  function drawCM(mass1, position1, mass2, position2, centerOfMass) {
+    cmCtx.clearRect(0, 0, cmCanvas.width, cmCanvas.height);
+
+    // Draw Mass 1
+    cmCtx.fillStyle = 'blue';
+    cmCtx.fillRect(position1 * 50 - 15, 300 - mass1 * 5, 30, mass1 * 5); // Scale for visibility
+
+    // Draw Mass 2
+    cmCtx.fillStyle = 'red';
+    cmCtx.fillRect(position2 * 50 - 15, 300 - mass2 * 5, 30, mass2 * 5); // Scale for visibility
+
+    // Draw Center of Mass
+    cmCtx.fillStyle = 'green';
+    cmCtx.fillRect(centerOfMass * 50 - 5, 290, 10, 10); // Center of Mass representation
+
+    // Draw Text Labels
+    cmCtx.fillStyle = 'black';
+    cmCtx.font = '16px Arial';
+    cmCtx.fillText('Mass 1', position1 * 50 - 10, 320);
+    cmCtx.fillText('Mass 2', position2 * 50 - 10, 320);
+    cmCtx.fillText('Center of Mass', centerOfMass * 50 - 10, 280);
+    cmCtx.fillText('Center of Mass = ' + centerOfMass.toFixed(2) + ' m', 50, 50);
+  }
+
   function updateCM() {
     const mass1 = parseFloat(mass1Slider.value);
     const position1 = parseFloat(position1Slider.value);
@@ -134,6 +164,8 @@ function startCM() {
     position1Value.textContent = position1;
     mass2Value.textContent = mass2;
     position2Value.textContent = position2;
+
+    drawCM(mass1, position1, mass2, position2, centerOfMass);
   }
 
   mass1Slider.addEventListener('input', updateCM);
@@ -141,8 +173,28 @@ function startCM() {
   mass2Slider.addEventListener('input', updateCM);
   position2Slider.addEventListener('input', updateCM);
 
-  updateCM(); // Initialize with default values
-}
+  // Interactive dragging
+  cmCanvas.addEventListener('mousedown', function(e) {
+    const x = e.offsetX;
+    const y = e.offsetY;
+
+    // Check if clicking on mass 1 or mass 2
+    if (x >= position1 * 50 - 15 && x <= position1 * 50 + 15 && y >= 300 - mass1 * 5 && y <= 300) {
+      isDraggingMass1 = true;
+    } else if (x >= position2 * 50 - 15 && x <= position2 * 50 + 15 && y >= 300 - mass2 * 5 && y <= 300) {
+      isDraggingMass2 = true;
+    }
+  });
+
+  cmCanvas.addEventListener('mouseup', function() {
+    isDraggingMass1 = false;
+    isDraggingMass2 = false;
+  });
+
+  cmCanvas.addEventListener('mousemove', function(e) {
+    if (isDraggingMass1 || isDraggingMass2) {
+      const x =
+
 // JavaScript for Interactive Simulations
 
 // Start Torque Simulation
