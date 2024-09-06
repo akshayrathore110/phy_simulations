@@ -1,64 +1,66 @@
-// Importing Matter.js modules
-let Engine = Matter.Engine,
-    Render = Matter.Render,
-    World = Matter.World,
-    Bodies = Matter.Bodies,
-    Body = Matter.Body;
+// JavaScript for Interactive Simulations
 
-let engine;
-let world;
-let boxA, boxB, ground;
+// Start Torque Simulation
+function startTorque() {
+  document.getElementById('torque-container').style.display = 'block';
+  document.getElementById('cm-container').style.display = 'none';
 
-function setup() {
-    // Create canvas for rendering
-    createCanvas(800, 400);
-    
-    // Setup Matter.js physics engine
-    engine = Engine.create();
-    world = engine.world;
+  const forceSlider = document.getElementById('torqueForce');
+  const distanceSlider = document.getElementById('torqueDistance');
+  const torqueResult = document.getElementById('torqueResult');
+  const forceValue = document.getElementById('forceValue');
+  const distanceValue = document.getElementById('distanceValue');
 
-    // Create objects
-    boxA = Bodies.rectangle(300, 200, 100, 50);
-    boxB = Bodies.rectangle(500, 200, 50, 100);
-    
-    // Ground
-    ground = Bodies.rectangle(400, 380, 810, 60, { isStatic: true });
+  // Update Torque Calculation
+  function updateTorque() {
+    const force = forceSlider.value;
+    const distance = distanceSlider.value;
+    const torque = force * distance;
+    torqueResult.textContent = torque.toFixed(2);
+    forceValue.textContent = force;
+    distanceValue.textContent = distance;
+  }
 
-    // Add all objects to the world
-    World.add(world, [boxA, boxB, ground]);
+  forceSlider.addEventListener('input', updateTorque);
+  distanceSlider.addEventListener('input', updateTorque);
 
-    // Render the simulation
-    Engine.run(engine);
+  updateTorque(); // Initialize with default values
 }
 
-function draw() {
-    background(255);
-    
-    // Render the objects
-    drawBody(boxA);
-    drawBody(boxB);
-    drawBody(ground);
-    
-    // Display the center of mass
-    fill(255, 0, 0);
-    ellipse(boxA.position.x, boxA.position.y, 10, 10);
-    ellipse(boxB.position.x, boxB.position.y, 10, 10);
-}
+// Start Center of Mass Simulation
+function startCM() {
+  document.getElementById('cm-container').style.display = 'block';
+  document.getElementById('torque-container').style.display = 'none';
 
-function drawBody(body) {
-    const vertices = body.vertices;
-    beginShape();
-    for (let i = 0; i < vertices.length; i++) {
-        vertex(vertices[i].x, vertices[i].y);
-    }
-    endShape(CLOSE);
-}
+  const mass1Slider = document.getElementById('mass1');
+  const position1Slider = document.getElementById('position1');
+  const mass2Slider = document.getElementById('mass2');
+  const position2Slider = document.getElementById('position2');
+  const cmResult = document.getElementById('cmResult');
+  const mass1Value = document.getElementById('mass1Value');
+  const position1Value = document.getElementById('position1Value');
+  const mass2Value = document.getElementById('mass2Value');
+  const position2Value = document.getElementById('position2Value');
 
-// Apply torque (rotation force)
-function keyPressed() {
-    if (keyCode === LEFT_ARROW) {
-        Body.applyForce(boxA, { x: boxA.position.x, y: boxA.position.y }, { x: -0.05, y: 0 });
-    } else if (keyCode === RIGHT_ARROW) {
-        Body.applyForce(boxA, { x: boxA.position.x, y: boxA.position.y }, { x: 0.05, y: 0 });
-    }
+  // Update Center of Mass Calculation
+  function updateCM() {
+    const mass1 = parseFloat(mass1Slider.value);
+    const position1 = parseFloat(position1Slider.value);
+    const mass2 = parseFloat(mass2Slider.value);
+    const position2 = parseFloat(position2Slider.value);
+
+    const centerOfMass = (mass1 * position1 + mass2 * position2) / (mass1 + mass2);
+    cmResult.textContent = centerOfMass.toFixed(2);
+    mass1Value.textContent = mass1;
+    position1Value.textContent = position1;
+    mass2Value.textContent = mass2;
+    position2Value.textContent = position2;
+  }
+
+  mass1Slider.addEventListener('input', updateCM);
+  position1Slider.addEventListener('input', updateCM);
+  mass2Slider.addEventListener('input', updateCM);
+  position2Slider.addEventListener('input', updateCM);
+
+  updateCM(); // Initialize with default values
 }
