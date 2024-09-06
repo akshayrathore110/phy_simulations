@@ -10,8 +10,46 @@ function startTorque() {
   const torqueResult = document.getElementById('torqueResult');
   const forceValue = document.getElementById('forceValue');
   const distanceValue = document.getElementById('distanceValue');
+  const torqueCanvas = document.getElementById('torqueCanvas');
+  const torqueCtx = torqueCanvas.getContext('2d');
 
-  // Update Torque Calculation
+  // Function to draw the simulation
+  function drawTorque(force, distance) {
+    torqueCtx.clearRect(0, 0, torqueCanvas.width, torqueCanvas.height);
+
+    // Draw lever arm
+    torqueCtx.strokeStyle = 'black';
+    torqueCtx.lineWidth = 5;
+    torqueCtx.beginPath();
+    torqueCtx.moveTo(50, 300);
+    torqueCtx.lineTo(50 + distance * 50, 300); // Scale distance for better visibility
+    torqueCtx.stroke();
+    
+    // Draw force vector
+    torqueCtx.strokeStyle = 'blue';
+    torqueCtx.lineWidth = 3;
+    torqueCtx.beginPath();
+    torqueCtx.moveTo(50 + distance * 50, 300);
+    torqueCtx.lineTo(50 + distance * 50, 300 - force * 2); // Scale force for better visibility
+    torqueCtx.stroke();
+
+    // Draw force arrow
+    torqueCtx.fillStyle = 'blue';
+    torqueCtx.beginPath();
+    torqueCtx.moveTo(50 + distance * 50, 300 - force * 2);
+    torqueCtx.lineTo(50 + distance * 50 - 10, 300 - force * 2 + 10);
+    torqueCtx.lineTo(50 + distance * 50 + 10, 300 - force * 2 + 10);
+    torqueCtx.fill();
+
+    // Draw text
+    torqueCtx.fillStyle = 'black';
+    torqueCtx.font = '16px Arial';
+    torqueCtx.fillText('Lever Arm', 20, 320);
+    torqueCtx.fillText('Force', 50 + distance * 50 + 20, 300 - force * 2);
+    torqueCtx.fillText('Torque = ' + (force * distance).toFixed(2) + ' Nm', 50, 50);
+  }
+
+  // Update Torque Calculation and Drawing
   function updateTorque() {
     const force = forceSlider.value;
     const distance = distanceSlider.value;
@@ -19,6 +57,8 @@ function startTorque() {
     torqueResult.textContent = torque.toFixed(2);
     forceValue.textContent = force;
     distanceValue.textContent = distance;
+    
+    drawTorque(force, distance); // Update visual representation
   }
 
   forceSlider.addEventListener('input', updateTorque);
