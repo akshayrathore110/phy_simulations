@@ -1,0 +1,25 @@
+function startTorque() {
+  console.log('Torque simulation started');
+  document.getElementById('torque-container').style.display = 'block';
+  document.getElementById('cm-container').style.display = 'none';
+
+  const forceSlider = document.getElementById('torqueForce');
+  const distanceSlider = document.getElementById('torqueDistance');
+  const torqueResult = document.getElementById('torqueResult');
+  const forceValue = document.getElementById('forceValue');
+  const distanceValue = document.getElementById('distanceValue');
+
+  function updateTorque() {
+    const force = forceSlider.value;
+    const distance = distanceSlider.value;
+    const torque = force * distance;
+    torqueResult.textContent = torque.toFixed(2);
+    forceValue.textContent = force;
+    distanceValue.textContent = distance;
+  }
+
+  forceSlider.addEventListener('input', updateTorque);
+  distanceSlider.addEventListener('input', updateTorque);
+
+  updateTorque(); // Initialize with default values
+}
